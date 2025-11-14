@@ -1,0 +1,11 @@
+[project]
+name = "telegrambot"
+version = "0.1.0"
+description = "this is a telegram bot for a telehack2025"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "aiogram>=3.22.0",
+    "loguru>=0.7.3",
+    "pydantic-settings>=2.12.0",
+]
