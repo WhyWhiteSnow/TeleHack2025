@@ -16,13 +16,16 @@ dp = Dispatcher()
 async def cmd_start(message: Message):
     await start_message_service.start_command(message)
 
-@dp.message(ContentTypesFilter(content_types=types.ContentType.TEXT))
-async def text_handler(message: types.Message):
-    await message.answer(f"Отправьте файл")
 
 @dp.message(F.document)
 async def handle_document(message: Message):
     await upload_file_service.handle_document(message)
+
+
+@dp.message()
+async def text_handler(message: types.Message):
+    await message.answer(f"Отправьте файл")
+
 
 async def main():
     logger.info("Bot is starting...")
