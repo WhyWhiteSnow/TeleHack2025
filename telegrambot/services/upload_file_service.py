@@ -13,6 +13,14 @@ class UploadFileService:
             document = message.document
             user_id = message.from_user.id
 
+            if not document.file_name.lower().endswith('.pdf'):
+                await message.answer(
+                    "❌ Неверный формат файла!\n"
+                    "📄 Пожалуйста, отправьте файл в формате PDF.\n"
+                    f"🔍 Ваш файл: {document.file_name}"
+                )
+                return
+
             processing_msg = await message.answer(
                 "📥 Получил файл. Загружаю на сервер..."
             )
