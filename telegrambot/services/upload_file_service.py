@@ -21,33 +21,25 @@ class UploadFileService:
         await message.answer(welcome_text)
 
     async def handle_document(self, message: Message):
-        """Обработчик документов (файлов)"""
         try:
             document = message.document
             user_id = message.from_user.id
 
-            # Отправляем сообщение о начале обработки
             processing_msg = await message.answer(
                 "📥 Получил файл. Загружаю на сервер..."
             )
 
-            # Скачиваем файл
             file_info = await message.bot.get_file(document.file_id)
             print(file_info)
             file_path = file_info.file_path
             downloaded_file = await message.bot.download_file(file_path)
-            # print(
-            #     f"Downloaded file size: {len(downloaded_file) if downloaded_file else 0} bytes"
-            # )
 
-            # Отправляем файл на сервер
             server_response = await self.send_file_to_server(
                 downloaded_file,
                 user_id,
-                document.file_name,  # добавляем filename
+                document.file_name,
             )
 
-            # Отправляем ответ от сервера пользователю
             response_text = self.format_server_response(server_response)
             await processing_msg.edit_text(f"✅ Файл обработан!\n\n{response_text}")
 
@@ -62,7 +54,6 @@ class UploadFileService:
         try:
             async with aiohttp.ClientSession() as session:
                 form_data = aiohttp.FormData()
-                # Передаем байты напрямую
                 form_data.add_field(
                     "file",
                     file_bytes,
