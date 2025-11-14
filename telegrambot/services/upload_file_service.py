@@ -8,18 +8,6 @@ class UploadFileService:
     def __init__(self, server_url: str):
         self.server_url = server_url
 
-    async def start_command(self, message: Message):
-        """Обработчик команды /start"""
-        welcome_text = (
-            "Привет! Я бот для работы с файлами.\n\n"
-            "Отправьте мне pdf файл, и я:\n"
-            "1. Загружу его на сервер\n"
-            "2. Получу ответ от сервера\n"
-            "3. Отправлю вам результат\n\n"
-            "Просто отправьте файл и ждите ответ!"
-        )
-        await message.answer(welcome_text)
-
     async def handle_document(self, message: Message):
         try:
             document = message.document
@@ -50,7 +38,6 @@ class UploadFileService:
     async def send_file_to_server(
         self, file_bytes: bytes, user_id: int, filename: str
     ) -> dict:
-        """Асинхронная отправка файла на сервер напрямую из байтов"""
         try:
             async with aiohttp.ClientSession() as session:
                 form_data = aiohttp.FormData()
@@ -80,7 +67,6 @@ class UploadFileService:
             return {"error": f"Connection error: {str(e)}"}
 
     def format_server_response(self, response: dict) -> str:
-        """Форматирование ответа от сервера для пользователя"""
         if "error" in response:
             return f"❌ Ошибка сервера:\n{response.get('message', 'Unknown error')}"
 
