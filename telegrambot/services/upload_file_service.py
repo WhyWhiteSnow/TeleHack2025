@@ -22,11 +22,10 @@ class UploadFileService:
                 return
 
             processing_msg = await message.answer(
-                "📥 Получил файл. Загружаю на сервер..."
+                f"📥 Получил файл {document.file_name}. Загружаю на сервер..."
             )
 
             file_info = await message.bot.get_file(document.file_id)
-            print(file_info)
             file_path = file_info.file_path
             downloaded_file = await message.bot.download_file(file_path)
 
@@ -37,7 +36,7 @@ class UploadFileService:
             )
 
             response_text = self.format_server_response(server_response)
-            await processing_msg.edit_text(f"✅ Файл обработан!\n\n{response_text}")
+            await processing_msg.edit_text(f"✅ Файл {document.file_name} обработан!\n\n{response_text}")
 
         except Exception as e:
             logger.error(f"Error sending file to server: {e}")
@@ -76,6 +75,7 @@ class UploadFileService:
 
     def format_server_response(self, response: dict) -> str:
         if "error" in response:
+            print(response)
             return f"❌ Ошибка сервера:\n{response.get('message', 'Unknown error')}"
 
         result = "📊 Результат обработки:\n"

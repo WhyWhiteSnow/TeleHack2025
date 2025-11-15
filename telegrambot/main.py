@@ -1,7 +1,7 @@
 import asyncio
 
 from aiogram import Bot, Dispatcher, F, types
-from aiogram.filters import Command, ContentTypesFilter
+from aiogram.filters import Command
 from aiogram.types import Message
 from loguru import logger
 from config import config

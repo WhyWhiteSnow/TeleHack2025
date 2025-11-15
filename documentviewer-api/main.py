@@ -27,11 +27,11 @@ async def upload_file(
             "filename": filename,
             "user_id": user_id,
             "file_size": len(file_bytes),
-            "message": "File uploaded successfully",
+            "message": "Файл успешно обработан",
             "data": result,
         }
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="pichkalev error",
+            detail="server error",
         ) from e
