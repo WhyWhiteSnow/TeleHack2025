@@ -5,7 +5,7 @@
 ![GitHub top language](https://img.shields.io/github/languages/top/WhyWhiteSnow/TeleHack2025)
 
 <div id="header" align="center">
-  <img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3N3ozam41aDRpb3A3eW93OTlneGN3c3JjZDJidGRmMmdjNDNtam5kaSZlcD12MV9zdGlja2Vyc190cmVuZGluZyZjdD10cw/WsvbZxS6Se8wAa41p2/giphy.gif" />
+  <img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3N3ozam41aDRpb3A3eW93OTlneGN3c3JjZDJidGRmMmdjNDNtam5kaSZlcD12MV9zdGlja2Vyc190cmVuZGluZyZjdD10cw/WsvbZxS6Se8wAa41p2/giphy.gif" width="230" />
 </div>
 
 ## Принцип работы
