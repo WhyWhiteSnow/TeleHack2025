@@ -35,3 +35,7 @@ async def upload_file(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="server error",
         ) from e
+
+@app.post("/upload_image")
+async def upload_image():
+    return {}

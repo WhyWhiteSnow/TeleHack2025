@@ -7,6 +7,7 @@ from loguru import logger
 from config import config
 from services.upload_file_service import upload_file_service
 from services.start_message_service import start_message_service
+from services.upload_image_service import upload_image_service
 
 bot = Bot(token=config.BOT_TOKEN)
 dp = Dispatcher()
@@ -21,6 +22,9 @@ async def cmd_start(message: Message):
 async def handle_document(message: Message):
     await upload_file_service.handle_document(message)
 
+@dp.message(F.photo)
+async def image_handler(message: types.Message):
+    await upload_image_service.handle_image(message)
 
 @dp.message()
 async def text_handler(message: types.Message):
