@@ -4,12 +4,12 @@ from typing import Any, Dict, List, Optional
 
 import pdfplumber
 
-from .schemas import QCRScannerServiceResponse
+from .schemas import OCRScannerServiceResponse
 
 
 class OCRScannerService:
-    def process_pdf(self, pdf_bytes: bytes) -> QCRScannerServiceResponse:
-        result = QCRScannerServiceResponse(
+    def process_pdf(self, pdf_bytes: bytes) -> OCRScannerServiceResponse:
+        result = OCRScannerServiceResponse(
             status="success",
             data={},
             tables=[],
