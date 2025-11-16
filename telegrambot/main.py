@@ -6,6 +6,7 @@ from aiogram.types import Message
 from loguru import logger
 
 from config import config
+from logger import *  # noqa
 from services.upload_file_service import upload_file_service
 
 bot = Bot(token=config.BOT_TOKEN)
