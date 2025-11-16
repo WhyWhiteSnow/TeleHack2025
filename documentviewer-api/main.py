@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
 from config import config
-from routers.files import router as files_router
+from routers.files.router import router as files_router
 
 app = FastAPI(
     title="Document Viewer API",
