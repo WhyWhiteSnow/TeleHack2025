@@ -2,7 +2,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Form, UploadFile
 
-from services.qcr_scanner_service.service import ocr_scanner_service
+from services.ocr_scanner_service.service import ocr_scanner_service
 
 from .schemas import UploadFileResponse
 
