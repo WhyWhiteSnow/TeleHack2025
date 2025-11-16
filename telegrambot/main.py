@@ -9,7 +9,7 @@ from config import config
 from logger import *  # noqa
 from services.upload_file_service import upload_file_service
 
-bot = Bot(token=config.BOT_TOKEN)
+bot = Bot(token=config.BOT_TOKEN.get_secret_value())
 dp = Dispatcher()
 
 

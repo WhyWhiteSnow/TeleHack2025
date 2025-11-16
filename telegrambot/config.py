@@ -1,5 +1,6 @@
 from typing import Literal
 
+from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -11,7 +12,7 @@ class Config(BaseSettings):
     )
 
     MODE: Literal["PROD", "DEV"] = "DEV"
-    BOT_TOKEN: str
+    BOT_TOKEN: SecretStr = Field(..., env="BOT_TOKEN")
     SERVER_URL: str
 
 
