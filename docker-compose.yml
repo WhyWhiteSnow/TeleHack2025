@@ -1,0 +1,31 @@
+services:
+  documentviewer-api:
+    container_name: documentviewer-api
+    build:
+      context: ./documentviewer-api
+      dockerfile: Dockerfile
+    env_file:
+      - ./documentviewer-api/.env
+    restart: always
+    command: sh -c "uv run main.py"
+    volumes:
+      - /app/.venv
+      - ./documentviewer-api/logs:/app/logs
+    expose:
+      - 8000
+    ports:
+      - 8000:8000
+  documentviewer-bot:
+    container_name: documentviewer-bot
+    build:
+      context: ./telegrambot
+      dockerfile: Dockerfile
+    env_file:
+      - ./telegrambot/.env
+    restart: always
+    command: sh -c "uv run main.py"
+    depends_on:
+      - documentviewer-api
+    volumes:
+      - /app/.venv
+      - ./telegrambot/logs:/app/logs
