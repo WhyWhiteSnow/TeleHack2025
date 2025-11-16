@@ -3,7 +3,12 @@ from typing import Annotated
 from fastapi import APIRouter, Form, UploadFile
 
 from services.ocr_scanner_service.service import ocr_scanner_service
-from services.ocr_image_service import handle_pdf_upload, process_image_all_text
+from services.ocr_image_service import (
+    handle_pdf_upload,
+    process_image_all_text,
+    process_pic,
+    process_image_all_text_for_image,
+)
 from .schemas import UploadFileResponse
 
 router = APIRouter()
@@ -52,11 +57,15 @@ async def upload_image(
     filename: str = Form(...),
 ) -> UploadFileResponse:
     # TODO: Implement image upload logic
+    file_bytes = await file.read()
+    result = process_pic(file_bytes)
+    result2 = process_image_all_text_for_image(file_bytes)
+    result["data"]["whole_text"] = result2
     return UploadFileResponse(
         status="success",
         filename=filename,
         user_id=user_id,
-        file_size=0,
+        file_size=len(file_bytes),
         message="Image successfully processed",
-        data={},
+        data=result,
     )

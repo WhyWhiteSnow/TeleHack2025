@@ -64,6 +64,30 @@ def process_image_all_text(pdf_bytes: bytes) -> str:
     return text
 
 
+def process_image_all_text_for_image(pic_bytes):
+    image = bytes_to_image(pic_bytes)
+    image = np.array(image)
+    image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+    height, width, channels = image.shape
+    image = cv2.resize(image, (width * 4, height * 4))
+    # convert to grayscale
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    denoised = cv2.medianBlur(gray, 3)
+    thresh = cv2.threshold(gray, 100, 255, cv2.THRESH_BINARY)[1]
+
+    # delete little noices using morphological operations
+    kernel = np.ones((1, 1), np.uint8)
+    cleaned = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel)  # delete small white dots
+    cleaned = cv2.morphologyEx(cleaned, cv2.MORPH_CLOSE, kernel)  # fill little black dots
+
+    result = cleaned
+    text = pytesseract.image_to_string(
+        result,
+        lang="rus",
+    )
+    return text
+
+
 def pdf_bytes_to_images(pdf_bytes: bytes) -> list:
     """
     Convert PDF from bytes to image list
@@ -78,6 +102,11 @@ def pdf_bytes_to_images(pdf_bytes: bytes) -> list:
     except Exception as e:
         logger.error(f"Error converting PDF: {e}")
         return []
+
+
+def bytes_to_image(pic_bytes):
+    image = Image.open(io.BytesIO(pic_bytes))
+    return image
 
 
 def preprocess_image(image):
@@ -393,6 +422,16 @@ def process_pdf_document(pdf_bytes: bytes, method: str = "advanced") -> Dict[str
             results[f"page_{page_num}"] = {"error": f"Processing error: {str(e)}"}
 
     return results
+
+
+def process_pic(pic_bytes: bytes):
+    image = bytes_to_image(pic_bytes=pic_bytes)
+    result = detect_table_cells_advanced(image)
+    return {
+        "success": True,
+        "data": result,
+        "message": "Processing completed successfully",
+    }
 
 
 # Example usage in web application

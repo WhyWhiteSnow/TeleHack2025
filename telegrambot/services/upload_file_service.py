@@ -113,7 +113,7 @@ class UploadFileService:
                     async with session.post(
                         url,
                         data=form_data,
-                        timeout=aiohttp.ClientTimeout(total=30),
+                        timeout=aiohttp.ClientTimeout(total=300),
                     ) as response:
                         response_text = await response.text()
                         logger.debug(f"Server response: status {response.status}")
