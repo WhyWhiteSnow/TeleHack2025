@@ -6,7 +6,6 @@ from aiogram.types import Message
 from loguru import logger
 from config import config
 from services.upload_file_service import upload_file_service
-from services.start_message_service import start_message_service
 from services.upload_image_service import upload_image_service
 
 bot = Bot(token=config.BOT_TOKEN)
@@ -15,7 +14,15 @@ dp = Dispatcher()
 
 @dp.message(Command("start"))
 async def cmd_start(message: Message):
-    await start_message_service.start_command(message)
+    welcome_text = (
+        "Привет! Я бот для работы с файлами.\n\n"
+        "Отправьте мне pdf файл, и я:\n"
+        "1. Загружу его на сервер\n"
+        "2. Получу ответ от сервера\n"
+        "3. Отправлю вам результат\n\n"
+        "Просто отправьте файл и ждите ответ!"
+    )
+    await message.answer(welcome_text)
 
 
 @dp.message(F.document)
