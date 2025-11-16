@@ -1,12 +1,19 @@
-import pdfplumber
 import io
 import re
-from typing import Dict, List, Any, Optional
+from typing import Any, Dict, List, Optional
+
+import pdfplumber
+
+from .schemas import QCRScannerServiceResponse
 
 
 class OCRScannerService:
-    def process_pdf(self, pdf_bytes: bytes) -> dict:
-        result = {"status": "success", "data": {}, "tables": []}
+    def process_pdf(self, pdf_bytes: bytes) -> QCRScannerServiceResponse:
+        result = QCRScannerServiceResponse(
+            status="success",
+            data={},
+            tables=[],
+        )
         special_word = "<UNKNOWN>"
 
         try:
@@ -23,9 +30,7 @@ class OCRScannerService:
                     page_tables = page.extract_tables()
 
                     for table_num, table in enumerate(page_tables):
-                        if table and any(
-                            any(cell is not None for cell in row) for row in table
-                        ):
+                        if table and any(any(cell is not None for cell in row) for row in table):
                             cleaned_table = self.clean_table(table)
                             if cleaned_table:
                                 table_info = {
@@ -37,8 +42,8 @@ class OCRScannerService:
                                 all_tables.append(table_info)
 
             if not full_text and not all_tables:
-                result["status"] = "error"
-                result["message"] = "Не удалось извлечь данные из PDF"
+                result.status = "error"
+                result.message = "Не удалось извлечь данные из PDF"
                 return result
 
             extracted_data = self.parse_text_fields(full_text)
@@ -47,12 +52,12 @@ class OCRScannerService:
 
             merged_data = self.merge_data(extracted_data, table_data)
 
-            result["data"] = self.build_structured_result(merged_data, special_word)
-            result["tables"] = all_tables
+            result.data = self.build_structured_result(merged_data, special_word)
+            result.tables = all_tables
 
         except Exception as e:
-            result["status"] = "error"
-            result["message"] = f"Ошибка обработки PDF: {str(e)}"
+            result.status = "error"
+            result.message = f"Ошибка обработки PDF: {str(e)}"
 
         return result
 
@@ -139,9 +144,7 @@ class OCRScannerService:
 
         return table_data
 
-    def extract_products_from_table(
-        self, table: List[List[str]]
-    ) -> List[Dict[str, Any]]:
+    def extract_products_from_table(self, table: List[List[str]]) -> List[Dict[str, Any]]:
         products = []
 
         if len(table) < 2:
@@ -149,9 +152,7 @@ class OCRScannerService:
 
         headers = [h.lower() for h in table[0]]
 
-        name_col = self.find_column_index(
-            headers, ["наименование", "товар", "услуга", "описание"]
-        )
+        name_col = self.find_column_index(headers, ["наименование", "товар", "услуга", "описание"])
         quantity_col = self.find_column_index(headers, ["количество", "кол-во", "шт"])
         price_col = self.find_column_index(headers, ["цена", "стоимость"])
         amount_col = self.find_column_index(headers, ["сумма", "amount", "итого"])
@@ -161,15 +162,11 @@ class OCRScannerService:
                 continue
 
             product = {
-                "name": row[name_col]
-                if name_col is not None and name_col < len(row)
-                else "",
+                "name": row[name_col] if name_col is not None and name_col < len(row) else "",
                 "quantity": row[quantity_col]
                 if quantity_col is not None and quantity_col < len(row)
                 else "",
-                "price": row[price_col]
-                if price_col is not None and price_col < len(row)
-                else "",
+                "price": row[price_col] if price_col is not None and price_col < len(row) else "",
                 "amount": row[amount_col]
                 if amount_col is not None and amount_col < len(row)
                 else "",
@@ -216,17 +213,13 @@ class OCRScannerService:
 
         return totals
 
-    def find_column_index(
-        self, headers: List[str], keywords: List[str]
-    ) -> Optional[int]:
+    def find_column_index(self, headers: List[str], keywords: List[str]) -> Optional[int]:
         for i, header in enumerate(headers):
             if any(keyword in header for keyword in keywords):
                 return i
         return None
 
-    def merge_data(
-        self, text_data: Dict[str, Any], table_data: Dict[str, Any]
-    ) -> Dict[str, Any]:
+    def merge_data(self, text_data: Dict[str, Any], table_data: Dict[str, Any]) -> Dict[str, Any]:
         merged = text_data.copy()
 
         if table_data.get("bank_details"):
@@ -242,9 +235,7 @@ class OCRScannerService:
 
         return merged
 
-    def build_structured_result(
-        self, data: Dict[str, Any], special_word: str
-    ) -> Dict[str, Any]:
+    def build_structured_result(self, data: Dict[str, Any], special_word: str) -> Dict[str, Any]:
         # Основная структура
         result = {
             "supplier": {
@@ -258,9 +249,7 @@ class OCRScannerService:
                     "bank_account",
                     data.get("bank_details", {}).get("account_number", special_word),
                 ),
-                "bik": data.get(
-                    "bik", data.get("bank_details", {}).get("bik", special_word)
-                ),
+                "bik": data.get("bik", data.get("bank_details", {}).get("bik", special_word)),
             },
             "document_info": {
                 "number": data.get("invoice_number", special_word),
@@ -274,9 +263,7 @@ class OCRScannerService:
 
         bank_details = data.get("bank_details", {})
         if bank_details:
-            result["payment_details"]["bank_name"] = bank_details.get(
-                "bank_name", special_word
-            )
+            result["payment_details"]["bank_name"] = bank_details.get("bank_name", special_word)
             result["payment_details"]["correspondent_account"] = bank_details.get(
                 "correspondent_account", special_word
             )
