@@ -12,6 +12,8 @@ class Config(BaseSettings):
 
     VERSION: str = "0.1.0"
     MODE: Literal["PROD", "DEV"] = "DEV"
+    HOST: str = "0.0.0.0"
+    PORT: int = 8000
 
 
 config = Config()

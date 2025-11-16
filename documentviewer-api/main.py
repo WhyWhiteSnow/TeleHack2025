@@ -26,3 +26,16 @@ def health():
         "version": config.VERSION,
         "docs_url": "/docs" if config.MODE == "DEV" else None,
     }
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    logger.info(f"Starting server in {config.MODE} mode on {config.HOST}:{config.PORT}")
+    uvicorn.run(
+        "main:app",
+        host=config.HOST,
+        port=config.PORT,
+        reload=True if config.MODE == "DEV" else False,
+        log_level="debug" if config.MODE == "DEV" else "info",
+    )
