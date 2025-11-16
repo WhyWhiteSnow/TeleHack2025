@@ -1,6 +1,9 @@
 from fastapi import FastAPI
+from loguru import logger
 
-from config import config
+from core.config import config
+from core.logger import *  # noqa
+from middlewares.logging import LoggingMiddleware
 from routers.files.router import router as files_router
 
 app = FastAPI(
@@ -9,6 +12,8 @@ app = FastAPI(
     version=config.VERSION,
     docs_url="/docs",
 )
+
+app.add_middleware(LoggingMiddleware)
 
 app.include_router(files_router)
 
