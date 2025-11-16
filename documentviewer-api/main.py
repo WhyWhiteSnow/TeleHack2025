@@ -1,8 +1,14 @@
-from fastapi import FastAPI, File, Form, HTTPException, status
-from services.ocr_scanner_service import ocr_scanner_service
+from fastapi import FastAPI
 
-app = FastAPI()
+from config import config
+from routers.files import router as files_router
 
+app = FastAPI(
+    title="Document Viewer API",
+    description="API for document viewer",
+    version=config.VERSION,
+    docs_url="/docs",
+)
 
 @app.get("/health")
 def health():

@@ -1,4 +1,5 @@
 from typing import Literal
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -8,7 +9,8 @@ class Config(BaseSettings):
         env_file_encoding="utf-8",
         extra="ignore",
     )
-    PORT: int = 8000
+
+    VERSION: str = "0.1.0"
     MODE: Literal["PROD", "DEV"] = "DEV"
 
 
