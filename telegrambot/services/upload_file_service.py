@@ -208,9 +208,9 @@ class UploadFileService:
             )
             m_size = 4096
             response_text = self.format_server_response(server_response)
-            text = [
-                response_text[i : i + m_size] for i in range(0, len(response_text) - m_size, m_size)
-            ]
+            print(response_text)
+            text = [response_text[i : i + m_size] for i in range(0, len(response_text), m_size)]
+            print(text)
             await processing_msg.answer(f"{success_prefix}")
             for i in range(len(text)):
                 await processing_msg.answer(f"{text[i]}")

@@ -17,30 +17,31 @@ async def upload_file(
 ) -> UploadFileResponse:
     file_bytes = await file.read()
     # with tables
-    result = handle_pdf_upload(file_bytes)
-    if "error" in result["data"]:
+    result = ocr_scanner_service.process_pdf(pdf_bytes=file_bytes)
+    if result.status == "error":
+        print("_________")
         # only if text-like tpd
-        result = ocr_scanner_service.process_pdf(pdf_bytes=file_bytes)
+        result = handle_pdf_upload(file_bytes)
         return UploadFileResponse(
-            status=result.status,
+            status="success",
             filename=filename,
             user_id=user_id,
             file_size=len(file_bytes),
-            message=result.message or "File successfully processed",
-            data=result.data,
+            message="success",
+            data=result,
         )
     # all text
     result2 = process_image_all_text(file_bytes)
     # print(result2)
-    result["whole text"] = result2
+    result.data["whole text"] = result2
     print(result)
     return UploadFileResponse(
-        status="success",
+        status=result.status,
         filename=filename,
         user_id=user_id,
         file_size=len(file_bytes),
-        message="success",
-        data=result,
+        message=result.message or "File successfully processed",
+        data=result.data,
     )
 
 
