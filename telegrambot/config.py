@@ -1,4 +1,5 @@
 from typing import Literal
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -8,6 +9,7 @@ class Config(BaseSettings):
         env_file_encoding="utf-8",
         extra="ignore",
     )
+
     MODE: Literal["PROD", "DEV"] = "DEV"
     BOT_TOKEN: str
     SERVER_URL: str

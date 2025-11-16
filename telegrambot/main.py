@@ -4,6 +4,7 @@ from aiogram import Bot, Dispatcher, F, types
 from aiogram.filters import Command
 from aiogram.types import Message
 from loguru import logger
+
 from config import config
 from services.upload_file_service import upload_file_service
 
@@ -28,6 +29,7 @@ async def cmd_start(message: Message):
 async def handle_document(message: Message):
     await upload_file_service.handle_document(message)
 
+
 @dp.message(F.photo)
 async def image_handler(message: types.Message):
     await upload_file_service.handle_photo(message)
@@ -35,7 +37,7 @@ async def image_handler(message: types.Message):
 
 @dp.message()
 async def text_handler(message: types.Message):
-    await message.answer(f"Отправьте файл")
+    await message.answer("Отправьте файл")
 
 
 async def main():
