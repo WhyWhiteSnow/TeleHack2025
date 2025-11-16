@@ -12,19 +12,13 @@ if os.name == "nt":
     pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
     poppler_path = r"D:\poopler\poppler-25.11.0\Library\bin"
 else:
-    setup_tesseract()  # noqa
-
-# Automatically check tesseract paths for Linux
-
-
-def setup_tesseract():
     # Check possible installation paths
     possible_paths = ["/usr/bin/tesseract", "/usr/local/bin/tesseract", "/bin/tesseract"]
     for path in possible_paths:
         if os.path.exists(path):
             pytesseract.pytesseract.tesseract_cmd = path
             logger.info(f"Tesseract found: {path}")
-            return
+            break
     # If not found, use which command
     import subprocess
 
@@ -32,10 +26,11 @@ def setup_tesseract():
     if result.returncode == 0:
         pytesseract.pytesseract.tesseract_cmd = result.stdout.strip()
         logger.info(f"Tesseract found via which: {pytesseract.pytesseract.tesseract_cmd}")
-        return
-    logger.critical(
-        "WARNING: Tesseract not found in the system. Install it using your package manager."
-    )
+    else:
+        logger.critical(
+            "WARNING: Tesseract not found in the system. Install it using your package manager."
+        )
+        raise Exception("Tesseract not found in the system. Install it using your package manager.")
 
 
 def pdf_bytes_to_images(pdf_bytes: bytes) -> list:
