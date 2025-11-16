@@ -146,9 +146,14 @@ class UploadFileService:
             user_id=user_id,
             filename=filename,
         )
-
+        m_size = 4096
         response_text = self.format_server_response(server_response)
-        await processing_msg.edit_text(f"{success_prefix}\n\n{response_text}")
+        text = [
+            response_text[i : i + m_size] for i in range(0, len(response_text) - m_size, m_size)
+        ]
+        await processing_msg.answer(f"{success_prefix}")
+        for i in range(len(text)):
+            await processing_msg.answer(f"{text[i]}")
         return server_response
 
     async def _download_tg_file(self, message: Message, file_id: str) -> bytes:
